@@ -39,7 +39,10 @@ class Visualizer():
             ncols = self.ncols
             if ncols > 0:
                 ncols = min(ncols, len(visuals))
-                h, w = next(iter(visuals.values())).shape[:2]
+                # Chong: Original version
+                # h, w = next(iter(visuals.values())).shape[:2]
+                # Chong: Fix for "AttributeError: 'Variable' object has no attribute 'shape'"
+                h, w = next(iter(visuals.values())).data.shape[:2]
                 table_css = """<style>
                         table {border-collapse: separate; border-spacing:4px; white-space:nowrap; text-align:center}
                         table td {width: %dpx; height: %dpx; padding: 4px; outline: 4px solid black}
@@ -119,7 +122,7 @@ class Visualizer():
     def print_current_losses(self, epoch, i, losses, t, t_data):
         message = '(epoch: %d, iters: %d, time: %.3f, data: %.3f) ' % (epoch, i, t, t_data)
         for k, v in losses.items():
-            # Chong:  Original version
+            # Chong: Original version
             # message += '%s: %.3f ' % (k, v)
             # Chong: Debug for "TypeError: float argument required, not Variable"
             # print "[Chong: Debug]: "
