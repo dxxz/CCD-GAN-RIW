@@ -119,7 +119,14 @@ class Visualizer():
     def print_current_losses(self, epoch, i, losses, t, t_data):
         message = '(epoch: %d, iters: %d, time: %.3f, data: %.3f) ' % (epoch, i, t, t_data)
         for k, v in losses.items():
-            message += '%s: %.3f ' % (k, v)
+            # Chong:  Original version
+            # message += '%s: %.3f ' % (k, v)
+            # Chong: Debug for "TypeError: float argument required, not Variable"
+            # print "[Chong: Debug]: "
+            # print v
+            # message += '%s: ' % k
+            # Chong: Fix for "TypeError: float argument required, not Variable"
+            message += '%s: %.3f ' % (k, v.data[0])
 
         print(message)
         with open(self.log_name, "a") as log_file:
