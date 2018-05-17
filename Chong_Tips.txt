@@ -1,0 +1,111 @@
+CycleGAN train/test
+1. Download a CycleGAN dataset (e.g. maps):
+
+bash ./datasets/download_cyclegan_dataset.sh maps
+
+2. Train a model:
+
+#!./scripts/train_cyclegan.sh
+python train.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan --no_dropout
+
+To view training results and loss plots, run python -m visdom.server and click the URL http://localhost:8097. To see more intermediate results, check out ./checkpoints/maps_cyclegan/web/index.html
+
+3. Test the model:
+
+#!./scripts/test_cyclegan.sh
+python test.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan --phase test --no_dropout
+
+The test results will be saved to a html file here: ./results/maps_cyclegan/latest_test/index.html.
+
+具体情况:
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python train.py --dataroot ./datasets/vangogh2photo --name vangogh2photo_cyclegan --model cycle_gan --no_dropout
+
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python train.py --dataroot ./datasets/chong_swedish_emblem --name chong_swedish_emblem_cyclegan --model cycle_gan --no_dropout
+
+遇到的错误:
+1. TypeError: float argument required, not Variable
+...
+which_model_netG: resnet_9blocks
+-------------- End ----------------
+CustomDatasetDataLoader
+dataset [UnalignedDataset] was created
+#training images = 1096
+initialize network with normal
+initialize network with normal
+initialize network with normal
+initialize network with normal
+---------- Networks initialized -------------
+[Network G_A] Total number of parameters : 11.378 M
+[Network G_B] Total number of parameters : 11.378 M
+[Network D_A] Total number of parameters : 2.765 M
+[Network D_B] Total number of parameters : 2.765 M
+-----------------------------------------------
+model [CycleGANModel] was created
+create web directory ./checkpoints/maps_cyclegan/web...
+Traceback (most recent call last):
+  File "train.py", line 40, in <module>
+    visualizer.print_current_losses(epoch, epoch_iter, losses, t, t_data)
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/util/visualizer.py", line 122, in print_current_losses
+    message += '%s: %.3f ' % (k, v)
+TypeError: float argument required, not Variable
+
+原因在于:
+现在v不是单一的数值, 而是一个variable, 具体用log打印出来, 形式是:
+(epoch: 1, iters: 200, time: 0.383, data: 0.002) D_A: G_A: cycle_A: idt_A: D_B: G_B: cycle_B: idt_B: 
+Variable containing:
+ 23.8224
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+Variable containing:
+ 31.8729
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+Variable containing:
+ 5.6663
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+Variable containing:
+ 2.1658
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+Variable containing:
+ 23.9134
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+Variable containing:
+ 20.8273
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+Variable containing:
+ 4.3460
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+Variable containing:
+ 2.6551
+[torch.cuda.FloatTensor of size 1 (GPU 0)]
+
+解决方案:
+https://discuss.pytorch.org/t/get-value-out-of-torch-cuda-float-tensor/2539/5
+
+2. 解决后遇到
+-----------------------------------------------
+model [CycleGANModel] was created
+create web directory ./checkpoints/maps_cyclegan/web...
+(epoch: 1, iters: 100, time: 0.367, data: 0.166) D_A: 52.603 G_A: 74.964 cycle_A: 11.018 idt_A: 4.790 D_B: 48.018 G_B: 60.805 cycle_B: 9.569 idt_B: 5.533 
+(epoch: 1, iters: 200, time: 0.382, data: 0.001) D_A: 36.041 G_A: 47.251 cycle_A: 11.589 idt_A: 4.165 D_B: 35.748 G_B: 42.274 cycle_B: 8.340 idt_B: 5.819 
+(epoch: 1, iters: 300, time: 0.391, data: 0.001) D_A: 25.492 G_A: 34.679 cycle_A: 11.501 idt_A: 3.644 D_B: 27.819 G_B: 31.534 cycle_B: 7.137 idt_B: 5.832 
+Traceback (most recent call last):
+  File "train.py", line 35, in <module>
+    visualizer.display_current_results(model.get_current_visuals(), epoch, save_result)
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/util/visualizer.py", line 42, in display_current_results
+    h, w = next(iter(visuals.values())).shape[:2]
+  File "/home/chongyu/anaconda2/lib/python2.7/site-packages/torch/autograd/variable.py", line 65, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'Variable' object has no attribute 'shape'
+
+解决方案:
+https://github.com/pytorch/pytorch/issues/2315
+
+
+
+
