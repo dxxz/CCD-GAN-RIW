@@ -6,11 +6,11 @@
 
 This is our PyTorch implementation for both unpaired and paired image-to-image translation. It is still under active development.
 
-The code was written by [Jun-Yan Zhu](https://github.com/junyanz) and [Taesung Park](https://github.com/taesung89).
+The code was written by [Jun-Yan Zhu](https://github.com/junyanz) and [Taesung Park](https://github.com/taesung89), and supported by [Tongzhou Wang](https://ssnl.github.io/).
 
-This PyTorch implementation produces results comparable or better than our original Torch software. If you would like to reproduce the exact same results as in the papers, check out the original [CycleGAN Torch](https://github.com/junyanz/CycleGAN) and [pix2pix Torch](https://github.com/phillipi/pix2pix) code
+This PyTorch implementation produces results comparable to or better than our original Torch software. If you would like to reproduce the exact same results as in the papers, check out the original [CycleGAN Torch](https://github.com/junyanz/CycleGAN) and [pix2pix Torch](https://github.com/phillipi/pix2pix) code
 
-**Note**: The current software works well with PyTorch 0.1-0.3. PyTorch 0.4 support will be added by the end of May.
+**Note**: The current software works well with PyTorch 0.4. Check out the older [branch](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix/tree/pytorch0.3.1) that supports PyTorch 0.1-0.3.
 
 #### CycleGAN: [[Project]](https://junyanz.github.io/CycleGAN/) [[Paper]](https://arxiv.org/pdf/1703.10593.pdf) [[Torch]](https://github.com/junyanz/CycleGAN)
 <img src="https://junyanz.github.io/CycleGAN/images/teaser_high_res.jpg" width="900"/>
@@ -19,24 +19,24 @@ This PyTorch implementation produces results comparable or better than our origi
 
 <img src="https://phillipi.github.io/pix2pix/images/teaser_v3.png" width="900px"/>
 
-#### [[EdgesCats Demo]](https://affinelayer.com/pixsrv/)  [[pix2pix-tensorflow]](https://github.com/affinelayer/pix2pix-tensorflow)   
-Written by [Christopher Hesse](https://twitter.com/christophrhesse)  
+#### [[EdgesCats Demo]](https://affinelayer.com/pixsrv/)  [[pix2pix-tensorflow]](https://github.com/affinelayer/pix2pix-tensorflow)
+Written by [Christopher Hesse](https://twitter.com/christophrhesse)
 
 <img src='imgs/edges2cats.jpg' width="600px"/>
 
 If you use this code for your research, please cite:
 
-Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks  
-[Jun-Yan Zhu](https://people.eecs.berkeley.edu/~junyanz/)\*,  [Taesung Park](https://taesung.me/)\*, [Phillip Isola](https://people.eecs.berkeley.edu/~isola/), [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros)  
-In ICCV 2017. (* equal contributions)  
+Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks
+[Jun-Yan Zhu](https://people.eecs.berkeley.edu/~junyanz/)\*,  [Taesung Park](https://taesung.me/)\*, [Phillip Isola](https://people.eecs.berkeley.edu/~isola/), [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros)
+In ICCV 2017. (* equal contributions)
 
 
-Image-to-Image Translation with Conditional Adversarial Networks  
-[Phillip Isola](https://people.eecs.berkeley.edu/~isola), [Jun-Yan Zhu](https://people.eecs.berkeley.edu/~junyanz), [Tinghui Zhou](https://people.eecs.berkeley.edu/~tinghuiz), [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros)   
+Image-to-Image Translation with Conditional Adversarial Networks
+[Phillip Isola](https://people.eecs.berkeley.edu/~isola), [Jun-Yan Zhu](https://people.eecs.berkeley.edu/~junyanz), [Tinghui Zhou](https://people.eecs.berkeley.edu/~tinghuiz), [Alexei A. Efros](https://people.eecs.berkeley.edu/~efros)
 In CVPR 2017.
 
 ## Course
-CycleGAN course assignment [code](http://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/assignments/a4-code.zip) and [hangout](http://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/assignments/a4-handout.pdf) designed by Prof. [Roger Grosse](http://www.cs.toronto.edu/~rgrosse/) for [CSC321](http://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/) "Intro to Neural Networks and Machine Learning" at University of Toronto. Please contact the instructor if you would like to adopt it in your course.
+CycleGAN course assignment [code](http://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/assignments/a4-code.zip) and [handout](http://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/assignments/a4-handout.pdf) designed by Prof. [Roger Grosse](http://www.cs.toronto.edu/~rgrosse/) for [CSC321](http://www.cs.toronto.edu/~rgrosse/courses/csc321_2018/) "Intro to Neural Networks and Machine Learning" at University of Toronto. Please contact the instructor if you would like to adopt it in your course.
 
 ## Other implementations
 ### CycleGAN
@@ -71,7 +71,7 @@ CycleGAN course assignment [code](http://www.cs.toronto.edu/~rgrosse/courses/csc
 
 ## Getting Started
 ### Installation
-- Install PyTorch and dependencies from http://pytorch.org
+- Install PyTorch 0.4 and dependencies from http://pytorch.org
 - Install Torch vision from the source.
 ```bash
 git clone https://github.com/pytorch/vision
@@ -82,6 +82,10 @@ python setup.py install
 ```bash
 pip install visdom
 pip install dominate
+```
+- Alternatively, all dependencies can be installed by
+```bash
+pip install -r requirements.txt
 ```
 - Clone this repo:
 ```bash
@@ -97,13 +101,13 @@ bash ./datasets/download_cyclegan_dataset.sh maps
 - Train a model:
 ```bash
 #!./scripts/train_cyclegan.sh
-python train.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan --no_dropout
+python train.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan
 ```
 - To view training results and loss plots, run `python -m visdom.server` and click the URL http://localhost:8097. To see more intermediate results, check out `./checkpoints/maps_cyclegan/web/index.html`
 - Test the model:
 ```bash
 #!./scripts/test_cyclegan.sh
-python test.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan --phase test --no_dropout
+python test.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan
 ```
 The test results will be saved to a html file here: `./results/maps_cyclegan/latest_test/index.html`.
 
@@ -115,15 +119,15 @@ bash ./datasets/download_pix2pix_dataset.sh facades
 - Train a model:
 ```bash
 #!./scripts/train_pix2pix.sh
-python train.py --dataroot ./datasets/facades --name facades_pix2pix --model pix2pix --which_model_netG unet_256 --which_direction BtoA --lambda_A 100 --dataset_mode aligned --no_lsgan --norm batch --pool_size 0
+python train.py --dataroot ./datasets/facades --name facades_pix2pix --model pix2pix --which_direction BtoA
 ```
 - To view training results and loss plots, run `python -m visdom.server` and click the URL http://localhost:8097. To see more intermediate results, check out  `./checkpoints/facades_pix2pix/web/index.html`
 - Test the model (`bash ./scripts/test_pix2pix.sh`):
 ```bash
 #!./scripts/test_pix2pix.sh
-python test.py --dataroot ./datasets/facades --name facades_pix2pix --model pix2pix --which_model_netG unet_256 --which_direction BtoA --dataset_mode aligned --norm batch
+python test.py --dataroot ./datasets/facades --name facades_pix2pix --model pix2pix --which_direction BtoA 
 ```
-The test results will be saved to a html file here: `./results/facades_pix2pix/latest_val/index.html`.
+The test results will be saved to a html file here: `./results/facades_pix2pix/test_latest/index.html`.
 
 More example scripts can be found at `scripts` directory.
 
@@ -140,15 +144,15 @@ bash ./datasets/download_cyclegan_dataset.sh horse2zebra
 
 - Then generate the results using
 ```bash
-python test.py --dataroot datasets/horse2zebra/testA --checkpoints_dir ./checkpoints/ --name horse2zebra_pretrained --no_dropout --model test --dataset_mode single --loadSize 256
+python test.py --dataroot datasets/horse2zebra/testA --name horse2zebra_pretrained --model test
 ```
-The results will be saved at `./results/`. Use `--results_dir {directory_path_to_save_result}` to specify the results directory.
+The option `--model test` is used for generating results of CycleGAN only for one side. `python test.py --model cycle_gan` will require loading and generating results in both directions, which is sometimes unnecessary. The results will be saved at `./results/`. Use `--results_dir {directory_path_to_save_result}` to specify the results directory.
 - Note: The models trained using Torch and PyTorch produce slightly different results, although we were not able to decide which result is better. If you would like to reproduce the same results in our paper, we recommend using the pretrained models in the Torch codebase.
 
 - If you would like to apply a pre-trained model to a collection of input images (rather than image pairs), please use `--dataset_mode single` and `--model test` options. Here is a script to apply a model to Facade label maps (stored in the directory `facades/testB`).
 ``` bash
 #!./scripts/test_single.sh
-python test.py --dataroot ./datasets/facades/testB/ --name {your_trained_model_name} --model test --dataset_mode single
+python test.py --dataroot ./datasets/facades/testB/ --name {your_trained_model_name} --model test 
 ```
 You might want to specify `--which_model_netG` to match the generator architecture of the trained model.
 
@@ -167,16 +171,16 @@ bash ./datasets/download_pix2pix_dataset.sh facades
 ```
 - Then generate the results using
 ```bash
-python test.py --dataroot ./datasets/facades/ --which_direction BtoA --model pix2pix --name facades_label2photo_pretrained --dataset_mode aligned --which_model_netG unet_256 --norm batch
+python test.py --dataroot ./datasets/facades/ --which_direction BtoA --model pix2pix --name facades_label2photo_pretrained
 ```
 Note that we specified `--which_direction BtoA` as Facades dataset's A to B direction is photos to labels.
 
 - See a list of currently available models at `bash pretrained_models/download_pix2pix_model.sh`
 
 ## Training/test Details
-- Flags: see `options/train_options.py` and `options/base_options.py` for all the training flags; see `options/test_options.py` and `options/base_options.py` for all the test flags.
-- CPU/GPU (default `--gpu_ids 0`): set`--gpu_ids -1` to use CPU mode; set `--gpu_ids 0,1,2` for multi-GPU mode. You need a large batch size (e.g. `--batchSize 32`) to benefit from multiple GPUs.  
-- Visualization: during training, the current results can be viewed using two methods. First, if you set `--display_id` > 0, the results and loss plot will appear on a local graphics web server launched by [visdom](https://github.com/facebookresearch/visdom). To do this, you should have `visdom` installed and a server running by the command `python -m visdom.server`. The default server URL is `http://localhost:8097`. `display_id` corresponds to the window ID that is displayed on the `visdom` server. The `visdom` display functionality is turned on by default. To avoid the extra overhead of communicating with `visdom` set `--display_id 0`. Second, the intermediate results are saved to `[opt.checkpoints_dir]/[opt.name]/web/` as an HTML file. To avoid this, set `--no_html`.
+- Flags: see `options/train_options.py` and `options/base_options.py` for the training flags; see `options/test_options.py` and `options/base_options.py` for the test flags. There are some model-specific flags as well, which are added in the model files, such as `--lambda_A` option in `model/cycle_gan_model.py`. The default values of these options are also adjusted in the model files. 
+- CPU/GPU (default `--gpu_ids 0`): set`--gpu_ids -1` to use CPU mode; set `--gpu_ids 0,1,2` for multi-GPU mode. You need a large batch size (e.g. `--batchSize 32`) to benefit from multiple GPUs.
+- Visualization: during training, the current results can be viewed using two methods. First, if you set `--display_id` > 0, the results and loss plot will appear on a local graphics web server launched by [visdom](https://github.com/facebookresearch/visdom). To do this, you should have `visdom` installed and a server running by the command `python -m visdom.server`. The default server URL is `http://localhost:8097`. `display_id` corresponds to the window ID that is displayed on the `visdom` server. The `visdom` display functionality is turned on by default. To avoid the extra overhead of communicating with `visdom` set `--display_id -1`. Second, the intermediate results are saved to `[opt.checkpoints_dir]/[opt.name]/web/` as an HTML file. To avoid this, set `--no_html`.
 - Preprocessing: images can be resized and cropped in different ways using `--resize_or_crop` option. The default option `'resize_and_crop'` resizes the image to be of size `(opt.loadSize, opt.loadSize)` and does a random crop of size `(opt.fineSize, opt.fineSize)`. `'crop'` skips the resizing step and only performs random cropping. `'scale_width'` resizes the image to have width `opt.fineSize` while keeping the aspect ratio. `'scale_width_and_crop'` first resizes the image to have width `opt.loadSize` and then does random cropping of size `(opt.fineSize, opt.fineSize)`.
 - Fine-tuning/Resume training: to fine-tune a pre-trained model, or resume the previous training, use the `--continue_train` flag. The program will then load the model based on `which_epoch`. By default, the program will initialize the epoch count as 1. Set `--epoch_count <int>` to specify a different starting epoch count.
 - For Conda users, we include a script `./scripts/conda_deps.sh` to install PyTorch and other libraries.
@@ -244,12 +248,12 @@ If you use this code for your research, please cite our papers.
 ```
 
 ## Related Projects
-[CycleGAN](https://github.com/junyanz/CycleGAN): Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks  
-[pix2pix](https://github.com/phillipi/pix2pix): Image-to-image translation with conditional adversarial nets  
+[CycleGAN](https://github.com/junyanz/CycleGAN): Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks
+[pix2pix](https://github.com/phillipi/pix2pix): Image-to-image translation with conditional adversarial nets
 [iGAN](https://github.com/junyanz/iGAN): Interactive Image Generation via Generative Adversarial Networks
 
 ## Cat Paper Collection
-If you love cats, and love reading cool graphics, vision, and learning papers, please check out the Cat Paper Collection:  
+If you love cats, and love reading cool graphics, vision, and learning papers, please check out the Cat Paper Collection:
 [[Github]](https://github.com/junyanz/CatPapers) [[Webpage]](https://people.eecs.berkeley.edu/~junyanz/cat/cat_papers.html)
 
 ## Acknowledgments

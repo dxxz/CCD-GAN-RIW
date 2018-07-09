@@ -7,6 +7,32 @@ from . import html
 from scipy.misc import imresize
 
 
+# save image to the disk
+def save_images(webpage, visuals, image_path, aspect_ratio=1.0, width=256):
+    image_dir = webpage.get_image_dir()
+    short_path = ntpath.basename(image_path[0])
+    name = os.path.splitext(short_path)[0]
+
+    webpage.add_header(name)
+    ims, txts, links = [], [], []
+
+    for label, im_data in visuals.items():
+        im = util.tensor2im(im_data)
+        image_name = '%s_%s.png' % (name, label)
+        save_path = os.path.join(image_dir, image_name)
+        h, w, _ = im.shape
+        if aspect_ratio > 1.0:
+            im = imresize(im, (h, int(w * aspect_ratio)), interp='bicubic')
+        if aspect_ratio < 1.0:
+            im = imresize(im, (int(h / aspect_ratio), w), interp='bicubic')
+        util.save_image(im, save_path)
+
+        ims.append(image_name)
+        txts.append(label)
+        links.append(image_name)
+    webpage.add_images(ims, txts, links, width=width)
+
+
 class Visualizer():
     def __init__(self, opt):
         self.display_id = opt.display_id
@@ -18,8 +44,8 @@ class Visualizer():
         if self.display_id > 0:
             import visdom
             self.ncols = opt.display_ncols
-            self.vis = visdom.Visdom(server=opt.display_server, port=opt.display_port)
-
+            self.vis = visdom.Visdom(server=opt.display_server, port=opt.display_port, raise_exceptions=True)
+            
         if self.use_html:
             self.web_dir = os.path.join(opt.checkpoints_dir, opt.name, 'web')
             self.img_dir = os.path.join(self.web_dir, 'images')
@@ -32,6 +58,10 @@ class Visualizer():
 
     def reset(self):
         self.saved = False
+
+    def throw_visdom_connection_error(self): 
+        print('\n\nCould not connect to Visdom server (https://github.com/facebookresearch/visdom) for displaying training progress.\nYou can suppress connection to Visdom using the option --display_id -1. To install visdom, run \n$ pip install visdom\n, and start the server by \n$ python -m visdom.server.\n\n')
+        exit(1)
 
     # |visuals|: dictionary of images to display or save
     def display_current_results(self, visuals, epoch, save_result):
@@ -68,11 +98,15 @@ class Visualizer():
                 if label_html_row != '':
                     label_html += '<tr>%s</tr>' % label_html_row
                 # pane col = image row
-                self.vis.images(images, nrow=ncols, win=self.display_id + 1,
-                                padding=2, opts=dict(title=title + ' images'))
-                label_html = '<table>%s</table>' % label_html
-                self.vis.text(table_css + label_html, win=self.display_id + 2,
-                              opts=dict(title=title + ' labels'))
+                try:
+                    self.vis.images(images, nrow=ncols, win=self.display_id + 1,
+                                    padding=2, opts=dict(title=title + ' images'))
+                    label_html = '<table>%s</table>' % label_html
+                    self.vis.text(table_css + label_html, win=self.display_id + 2,
+                                  opts=dict(title=title + ' labels'))
+                except ConnectionError:
+                    self.throw_visdom_connection_error()
+
             else:
                 idx = 1
                 for label, image in visuals.items():
@@ -107,16 +141,19 @@ class Visualizer():
         if not hasattr(self, 'plot_data'):
             self.plot_data = {'X': [], 'Y': [], 'legend': list(losses.keys())}
         self.plot_data['X'].append(epoch + counter_ratio)
-        self.plot_data['Y'].append([util.tensor2float(losses[k]) for k in self.plot_data['legend']])
-        self.vis.line(
-            X=np.stack([np.array(self.plot_data['X'])] * len(self.plot_data['legend']), 1),
-            Y=np.array(self.plot_data['Y']),
-            opts={
-                'title': self.name + ' loss over time',
-                'legend': self.plot_data['legend'],
-                'xlabel': 'epoch',
-                'ylabel': 'loss'},
-            win=self.display_id)
+        self.plot_data['Y'].append([losses[k] for k in self.plot_data['legend']])
+        try:
+            self.vis.line(
+                X=np.stack([np.array(self.plot_data['X'])] * len(self.plot_data['legend']), 1),
+                Y=np.array(self.plot_data['Y']),
+                opts={
+                    'title': self.name + ' loss over time',
+                    'legend': self.plot_data['legend'],
+                    'xlabel': 'epoch',
+                    'ylabel': 'loss'},
+                win=self.display_id)
+        except ConnectionError:
+            self.throw_visdom_connection_error()
 
     # losses: same format as |losses| of plot_current_losses
     def print_current_losses(self, epoch, i, losses, t, t_data):
@@ -134,28 +171,3 @@ class Visualizer():
         print(message)
         with open(self.log_name, "a") as log_file:
             log_file.write('%s\n' % message)
-
-    # save image to the disk
-    def save_images(self, webpage, visuals, image_path, aspect_ratio=1.0):
-        image_dir = webpage.get_image_dir()
-        short_path = ntpath.basename(image_path[0])
-        name = os.path.splitext(short_path)[0]
-
-        webpage.add_header(name)
-        ims, txts, links = [], [], []
-
-        for label, im_data in visuals.items():
-            im = util.tensor2im(im_data)
-            image_name = '%s_%s.png' % (name, label)
-            save_path = os.path.join(image_dir, image_name)
-            h, w, _ = im.shape
-            if aspect_ratio > 1.0:
-                im = imresize(im, (h, int(w * aspect_ratio)), interp='bicubic')
-            if aspect_ratio < 1.0:
-                im = imresize(im, (int(h / aspect_ratio), w), interp='bicubic')
-            util.save_image(im, save_path)
-
-            ims.append(image_name)
-            txts.append(label)
-            links.append(image_name)
-        webpage.add_images(ims, txts, links, width=self.win_size)
