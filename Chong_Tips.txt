@@ -18,9 +18,29 @@ python test.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan
 The test results will be saved to a html file here: ./results/maps_cyclegan/latest_test/index.html.
 
 具体情况:
+Train a model:
 chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python train.py --dataroot ./datasets/vangogh2photo --name vangogh2photo_cyclegan --model cycle_gan --no_dropout
 
 chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python train.py --dataroot ./datasets/chong_swedish_emblem --name chong_swedish_emblem_cyclegan --model cycle_gan --no_dropout
+
+python train.py --dataroot ./datasets/chong_Carl_Larsson2watermarked --name chong_Carl_Larsson2watermarked_cyclegan --model cycle_gan --no_dropout --gpu_ids 0,1,2,3
+
+python train.py --dataroot ./datasets/chong_monet2photo --name chong_monet2photo_cyclegan --model cycle_gan --no_dropout --gpu_ids 0,1,2,3
+
+python train.py --dataroot ./datasets/monet2photo --name monet2photo_cyclegan --model cycle_gan --no_dropout --gpu_ids 0,1,2,3
+
+Test the model:
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python test.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan --phase test --no_dropout
+
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python test.py --dataroot ./datasets/vangogh2photo --name vangogh2photo_cyclegan --model cycle_gan --phase test --no_dropout
+
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python test.py --dataroot ./datasets/chong_swedish_emblem --name chong_swedish_emblem_cyclegan --model cycle_gan --phase test --no_dropout
+
+python test.py --dataroot ./datasets/chong_vangogh2watermarked --name vangogh2photo_cyclegan --model cycle_gan --phase test --no_dropout
+
+python test.py --dataroot ./datasets/chong_Carl_Larsson2watermarked --name chong_Carl_Larsson2watermarked_cyclegan --model cycle_gan --phase test --no_dropout
+
+python test.py --dataroot ./datasets/chong_monet2photo --name chong_monet2photo_cyclegan --model cycle_gan --phase test --no_dropout --gpu_ids 0,1,2,3
 
 遇到的错误:
 1. TypeError: float argument required, not Variable
@@ -106,6 +126,134 @@ AttributeError: 'Variable' object has no attribute 'shape'
 解决方案:
 https://github.com/pytorch/pytorch/issues/2315
 
+========================================================================================================
+更新GitHub上自己 Fork 的代码与原作者的项目进度一致
 
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/Chong/CCD-GAN-RIW$ git remote add original_author https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git
 
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/Chong/CCD-GAN-RIW$ git fetch original_author
+remote: Counting objects: 166, done.
+remote: Total 166 (delta 83), reused 83 (delta 83), pack-reused 83
+Receiving objects: 100% (166/166), 43.25 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (118/118), completed with 31 local objects.
+From https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix
+ * [new branch]      dev        -> original_author/dev
+ * [new branch]      master     -> original_author/master
+ * [new branch]      pytorch0.3.1 -> original_author/pytorch0.3.1
+ chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/Chong/CCD-GAN-RIW$ git remote -v
+ origin	https://github.com/dxxz/CCD-GAN-RIW.git (fetch)
+ origin	https://github.com/dxxz/CCD-GAN-RIW.git (push)
+ original_author	https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git (fetch)
+ original_author	https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git (push)
+ original_cyclegan	https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git (fetch)
+ original_cyclegan	https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.git (push)
 
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/Chong/CCD-GAN-RIW$ git merge original_author/master
+Auto-merging util/visualizer.py
+Merge made by the 'recursive' strategy.
+README.md                             |  58 +++++++++++++++++++++++++++++++---------------------------
+data/__init__.py                      |  62 +++++++++++++++++++++++++++++++++++++++++---------------------
+data/aligned_dataset.py               |   4 ++++
+data/base_dataset.py                  |  59 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+data/single_dataset.py                |   4 ++++
+data/unaligned_dataset.py             |   4 ++++
+datasets/download_cyclegan_dataset.sh |   2 +-
+models/__init__.py                    |  54 +++++++++++++++++++++++++++++++++++++-----------------
+models/base_model.py                  |  72 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----------
+models/cycle_gan_model.py             |  60 +++++++++++++++++++++++-------------------------------------
+models/networks.py                    |  60 ++++++++++++++++++++++--------------------------------------
+models/pix2pix_model.py               |  52 +++++++++++++++++++++++-----------------------------
+models/test_model.py                  |  37 ++++++++++++++++++++++---------------
+options/base_options.py               | 151 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------------------------------------------
+options/test_options.py               |  22 ++++++++++++++--------
+options/train_options.py              |  48 ++++++++++++++++++++++--------------------------
+requirements.txt                      |   4 ++++
+scripts/check_all.sh                  |  31 +++++++++++++++++++++++++++++++
+scripts/conda_deps.sh                 |   1 +
+scripts/install_deps.sh               |   1 +
+scripts/test_before_push.py           |  32 ++++++++++++++++++++++++++++++++
+scripts/test_cyclegan.sh              |   1 +
+scripts/test_pix2pix.sh               |   1 +
+scripts/test_single.sh                |   1 +
+scripts/train_cyclegan.sh             |   1 +
+scripts/train_pix2pix.sh              |   3 ++-
+test.py                               |   9 +++++----
+train.py                              |   1 +
+util/image_pool.py                    |   5 ++---
+util/util.py                          |  17 +----------------
+util/visualizer.py                    |  96 ++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------
+31 files changed, 597 insertions(+), 356 deletions(-)
+create mode 100644 requirements.txt
+create mode 100644 scripts/check_all.sh
+create mode 100644 scripts/test_before_push.py
+
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/Chong/CCD-GAN-RIW$ git push origin
+warning: push.default is unset; its implicit value is changing in
+Git 2.0 from 'matching' to 'simple'. To squelch this message
+and maintain the current behavior after the default changes, use:
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python test.py --dataroot ./datasets/chong_monet2photo --name chong_monet2photo_cyclegan --model cycle_gan --phase test --no_dropout --gpu_ids 0,1,2,3
+Traceback (most recent call last):
+  File "test.py", line 2, in <module>
+    from options.test_options import TestOptions
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/options/test_options.py", line 1, in <module>
+    from .base_options import BaseOptions
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/options/base_options.py", line 5, in <module>
+    import models
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/models/__init__.py", line 2, in <module>
+    from models.base_model import BaseModel
+ImportError: No module named base_model
+
+  git config --global push.default matching
+
+To squelch this message and adopt the new behavior now, use:
+
+  git config --global push.default simple
+
+When push.default is set to 'matching', git will push local branches
+to the remote branches that already exist with the same name.
+
+In Git 2.0, Git will default to the more conservative 'simple'
+behavior, which only pushes the current branch to the corresponding
+remote branch that 'git pull' uses to update the current branch.
+
+See 'git help config' and search for 'push.default' for further information.
+(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+'current' instead of 'simple' if you sometimes use older versions of Git)
+
+dUsername for 'https://github.com':dxxz
+Password for 'https://dxxz@github.com':
+Counting objects: 206, done.
+Delta compression using up to 12 threads.
+Compressing objects: 100% (75/75), done.
+Writing objects: 100% (169/169), 34.03 KiB | 0 bytes/s, done.
+Total 169 (delta 120), reused 139 (delta 93)
+remote: Resolving deltas: 100% (120/120), completed with 26 local objects.
+To https://github.com/dxxz/CCD-GAN-RIW.git
+   e746e54..6a02035  master -> master
+========================================================================================================
+
+3. 把代码更新到最新版本,出现问题
+-----------------------------------------------
+chongyu@davinci-dev996:~/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix$ python test.py --dataroot ./datasets/maps --name maps_cyclegan --model cycle_gan --phase test --no_dropout
+Traceback (most recent call last):
+  File "test.py", line 2, in <module>
+    from options.test_options import TestOptions
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/options/test_options.py", line 1, in <module>
+    from .base_options import BaseOptions
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/options/base_options.py", line 5, in <module>
+    import models
+  File "/home/chongyu/Chong_dxxz_Projects/Github/pytorch-CycleGAN-and-pix2pix/models/__init__.py", line 2, in <module>
+    from models.base_model import BaseModel
+ImportError: No module named base_model
+
+定位后,发现导致出错的版本是:
+
+commit b62183747c14b1242286037871e5621544e27fb1
+Author: junyanz <junyanzhu89@gmail.com>
+Date:   Thu May 24 22:46:13 2018 -0400
+
+    move model.setup into train and test
+
+修改方法是:__init__.py
+#from models.base_model import BaseModel
+from base_model import BaseModel        #Chong: fix the error: "No module named base_model"
